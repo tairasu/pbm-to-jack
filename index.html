@@ -7,9 +7,10 @@
     <script src="script.js"></script>
 </head>
 <body style=" color-scheme: light dark; background-color: light-dark(rgb(240 253 250), #333b3c)">
-    <h1 style="text-align: center; font-family:Arial, Helvetica, sans-serif; background-color: rgb(144, 156, 153); color: aliceblue; padding: 24px; border-radius: 12px; width: fit-content; margin: auto; box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);">PBM to Jack Converter</h1>
-    <div style="width:50%; display: block; margin: 24px auto;">
-        <label for="file" style="display: block; text-align: center; font-family:Arial, Helvetica, sans-serif; color: aliceblue; font-size: 24px; border-radius:12px; padding:24px; width:66%; margin: auto; background-color: rgb(144, 156, 153); box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);">Select PBM file
+    <header style="text-align: center; font-family:Arial, Helvetica, sans-serif; width: fit-content; background-color: rgb(144, 156, 153); color: aliceblue; padding: 24px; margin: 12px auto; border-radius: 12px; box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2); "><a href="https://github.com/tairasu/pbm-to-jack/" style="color:aliceblue">GitHub page</a></header>
+    <h1 style="text-align: center; font-family:Arial, Helvetica, sans-serif; background-color: rgb(144, 156, 153); color: aliceblue; padding: 24px; border-radius: 12px; width: fit-content; margin: auto; box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);">PBM to Jack Converter</h1>
+    <div style="width:50%; display: block; margin: 12px auto;">
+        <label for="file" style="display: block; text-align: center; font-family:Arial, Helvetica, sans-serif; color: aliceblue; font-size: 24px; border-radius:12px; padding:24px; width:66%; margin: auto; background-color: rgb(144, 156, 153); box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);">Select PBM file
             <input type="file" id="file" onchange="handleFile(this.files[0])" accept=".pbm" style="display:block; margin: auto; padding:12px;" />
         </label>
     </div>
@@ -86,5 +87,7 @@
             return signedDecimal;
         }
     </script>
+
+
 </body>
 </html>
