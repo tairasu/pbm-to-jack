@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PBM to Jack</title>
-    <script src="script.js"></script>
 </head>
 <body style=" color-scheme: light dark; background-color: light-dark(rgb(240 253 250), #333b3c)">
     <header style="text-align: center; font-family:Arial, Helvetica, sans-serif; width: fit-content; background-color: rgb(144, 156, 153); color: aliceblue; padding: 24px; margin: 12px auto; border-radius: 12px; box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2); "><a href="https://github.com/tairasu/pbm-to-jack/" style="color:aliceblue">GitHub page</a></header>
@@ -12,10 +11,14 @@
     <div style="width:50%; display: block; margin: 12px auto;">
         <label for="file" style="display: block; text-align: center; font-family:Arial, Helvetica, sans-serif; color: aliceblue; font-size: 24px; border-radius:12px; padding:24px; width:66%; margin: auto; background-color: rgb(144, 156, 153); box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);">Select PBM file
             <input type="file" id="file" onchange="handleFile(this.files[0])" accept=".pbm" style="display:block; margin: auto; padding:12px;" />
+            <input type="checkbox" id="skip_empty" onclick="skipEmpty()"> <label style="font-size:16px" for="skip_empty">Skip empty pixels</label>
         </label>
     </div>
     <textarea id="output" style="caret-color: light-dark(rgb(144, 156, 153), aliceblue); color: light-dark(rgb(100, 108, 106), aliceblue); width: 50%; resize:none; outline: none; border: none; box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2); height: 500px; margin: 0 auto; display: block; border-radius: 12px; padding:24px; background-color: light-dark(rgb(249, 255, 254), rgb(144, 156, 153))"></textarea>
     <script>
+
+        var skipEmptyToggle = false;
+
         function handleFile(file) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -67,7 +70,7 @@
                             alert(`Invalid binary string "${column}" at row ${j} and column ${i}`);
                             return;
                         }
-                        if(decimal == 0){
+                        if(decimal == 0 && skipEmptyToggle){
                             continue;
                         }
 
@@ -91,6 +94,15 @@
             const decimal = parseInt(column, 2);
             const signedDecimal = decimal > 32767 ? decimal - 65536 : decimal; // Convert to signed decimal
             return signedDecimal;
+        }
+
+        function skipEmpty() {
+            skipEmptyToggle = document.getElementById('skip_empty').checked ? true : false;
+            
+            //file reproccesses if loaded
+            if(document.getElementById('output').value){
+                handleFile(document.getElementById('file').files[0]);
+            }
         }
     </script>
 
