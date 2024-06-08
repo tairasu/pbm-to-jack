@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PBM to Jack</title>
+    <script src="script.js"></script>
+</head>
+<body style=" color-scheme: light dark; background-color: light-dark(rgb(240 253 250), #333b3c)">
+    <h1 style="text-align: center; font-family:Arial, Helvetica, sans-serif; background-color: rgb(144, 156, 153); color: aliceblue; padding: 24px; border-radius: 12px; width: fit-content; margin: auto; box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);">PBM to Jack Converter</h1>
+    <div style="width:50%; display: block; margin: 24px auto;">
+        <label for="file" style="display: block; text-align: center; font-family:Arial, Helvetica, sans-serif; color: aliceblue; font-size: 24px; border-radius:12px; padding:24px; width:66%; margin: auto; background-color: rgb(144, 156, 153); box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);">Select PBM file
+            <input type="file" id="file" onchange="handleFile(this.files[0])" accept=".pbm" style="display:block; margin: auto; padding:12px;" />
+        </label>
+    </div>
+    <textarea id="output" style="caret-color: light-dark(rgb(144, 156, 153), aliceblue); color: light-dark(rgb(100, 108, 106), aliceblue); width: 50%; resize:none; outline: none; border: none; box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.2); height: 500px; margin: 0 auto; display: block; border-radius: 12px; padding:24px; background-color: light-dark(rgb(249, 255, 254), rgb(144, 156, 153))"></textarea>
+    <script>
+        function handleFile(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                console.log(text);
+                const lines = text.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#'));
+                console.log('Lines:', lines);
+
+                // CHECKS IF FILE IS OF TYPE P1
+                if (lines[0] !== 'P1') {
+                    alert('PBM file must be of type P1');
+                    return;
+                }
+
+                const size = lines[1].split(' ').map(Number);
+                console.log('Size:', size);
+
+                // CHECKS IF IMAGE WIDTH IS MULTIPLE OF 16
+                if (size[0] % 16 !== 0) {
+                    alert('Image width must be multiple of 16');
+                    return;
+                }
+
+                // GET COLUMN COUNT
+                const columnCount = size[0] / 16;
+                console.log('Column count:', columnCount);
+
+                // GET ROW COUNT
+                const rowCount = size[1];
+                console.log('Row count:', rowCount);
+
+                // PIXEL DATA INTO A SINGLE STRING
+                const pixelData = lines.slice(2).join('').replace(/\s+/g, '');
+                console.log('Pixel data:', pixelData);
+
+                // JACK CODE
+                let jackCode = 'function void draw(int location) {\n';
+                jackCode += '   var int memAddress;\n';
+                jackCode += '   let memAddress = 16384 + location;\n';
+
+                for (let i = 0; i < columnCount; i++) {
+                    jackCode += '   // column ' + i + '\n';
+                    for (let j = 0; j < rowCount; j++) {
+                        const start = (j * size[0]) + (i * 16);
+                        const column = pixelData.substr(start, 16);
+                        console.log('Processing column:', column);
+                        const decimal = convertColumn(column);
+                        if (isNaN(decimal)) {
+                            alert(`Invalid binary string "${column}" at row ${j} and column ${i}`);
+                            return;
+                        }
+                        jackCode += `   do Memory.poke(memAddress + ${j * 32 + i}, ${decimal});\n`;
+                    }
+                }
+
+                jackCode += '}\n';
+
+                document.getElementById('output').value = jackCode;
+            };
+            reader.readAsText(file);
+        }
+
+        // CONVERTS A COLUMN INTO A DECIMAL NUMBER
+        function convertColumn(column) {
+            column = column.replace(/[^01]/g, ''); // Remove any non-binary characters
+            column = column.split('').reverse().join(''); // Reverse the string for big-endian conversion
+            const decimal = parseInt(column, 2);
+            const signedDecimal = decimal > 32767 ? decimal - 65536 : decimal; // Convert to signed decimal
+            return signedDecimal;
+        }
+    </script>
+</body>
+</html>
