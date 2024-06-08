@@ -11,7 +11,7 @@ This project provides a single HTML file to convert PBM (Portable Bitmap) files 
 
 ## Usage
 
-1. Open the `index.html` file in a web browser.
+1. Open the `index.html` file in a web browser or use the netlify link (https://pbm2jack.netlify.app/).
 2. Select a PBM file.
 3. The converted Jack code will be displayed in the output textarea.
 
