@@ -67,9 +67,15 @@
                             alert(`Invalid binary string "${column}" at row ${j} and column ${i}`);
                             return;
                         }
-                        jackCode += `   do Memory.poke(memAddress + ${j * 32 + i}, ${decimal});\n`;
+                        if(decimal == 0){
+                            continue;
+                        }
+
+                        jackCode += `   do Memory.poke(memAddress + ${j * 32 + i}, ${decimal == -32768? '~32767' : decimal});\n`;
                     }
                 }
+
+                jackCode += 'return;\n'
 
                 jackCode += '}\n';
 
